@@ -1,0 +1,13 @@
+BASE_URL = "http://localhost:8080/api"
+SIGNUP_URL = "/user/signup"
+SIGNIN_URL = "/user/signin"
+ME_URL = "/user/me"
+GAME_URL = "/game/"
+GAME_START_URL = "/start"
+GAME_STATUS_URL = "/status"
+GAME_MAP_PNG = "/mapPNG/"
+GAME_TAKE_TURN = "/takeTurn"
+GAME_MAP_OBJECTS = "/mapObjects"
+GAME_ACTION = "/action"
+GAME_GET_ALL = "/all"
+
