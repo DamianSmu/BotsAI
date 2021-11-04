@@ -48,7 +48,7 @@ class GameController:
 
     def getMap(self):
         try:
-            return self.session.get(url=Constants.BASE_URL + Constants.GAME_URL + self.id + Constants.GAME_START_URL)
+            return self.session.get(url=Constants.BASE_URL + Constants.GAME_URL + self.id).json()
         except requests.exceptions.HTTPError as e:
             print("Request error: ", e)
 

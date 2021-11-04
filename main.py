@@ -1,8 +1,7 @@
 # %%
-
-
 from BotController import BotController
 from GameController import GameController
+from Map import Map
 
 bot1 = BotController('bot1')
 bot1.signup()
@@ -14,4 +13,9 @@ game.create()
 print(game.status())
 game.start()
 print(game.status())
+# %%
+v = game.getMap();
+map = Map()
+
+print(map.parse(v))
 
