@@ -1,12 +1,15 @@
 import requests
+
 import Constants
 
 
-class BotController:
+class Bot:
     def __init__(self, name):
         self.name = name
+        self.id = None
         self.session = requests.Session()
         self.token = None
+        self.objects = None
 
     def signup(self):
         payload = {
@@ -16,8 +19,8 @@ class BotController:
         }
         try:
             r = requests.post(url=Constants.BASE_URL + Constants.SIGNUP_URL, json=payload)
-            if r.status_code != requests.codes.unprocessable:
-                return
+            if r.ok:
+                self.id = r.json()['id']
         except requests.exceptions.HTTPError as e:
             print("Request error: ", e)
 
@@ -34,8 +37,12 @@ class BotController:
         except requests.exceptions.HTTPError as e:
             print("Request error: ", e)
 
+
     def get(self):
         try:
             return self.session.get(url=Constants.BASE_URL + Constants.ME_URL).json()
         except requests.exceptions.HTTPError as e:
             print("Request error: ", e)
+
+    def set_objects(self, objects):
+        self.objects = objects

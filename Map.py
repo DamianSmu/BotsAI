@@ -3,7 +3,7 @@ import sys
 
 import numpy as np
 
-types = { 'WATER': 0,
+terrain = {'WATER': 0,
           'LAND': 1,
           'IRON': 2,
           'GOLD': 3}
@@ -12,14 +12,14 @@ types = { 'WATER': 0,
 class Map:
     def __init__(self):
         self.terrain = None
+        self.size = None
 
-    def parse(self, json):
+    def set_terrain(self, json):
         j = json['map']['tiles']
         size = json['map']['size']
+        self.size = size
         arr = np.empty((size, size))
         for x in j:
-            arr[int(x['position']['x'])][int(x['position']['y'])] = types[x['type']]
+            arr[int(x['position']['x'])][int(x['position']['y'])] = terrain[x['type']]
         self.terrain = arr
 
-    def update(self):
-        pass

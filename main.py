@@ -1,21 +1,26 @@
 # %%
-from BotController import BotController
-from GameController import GameController
+import numpy as np
+
+from Bot import Bot
+from Game import Game
 from Map import Map
 
-bot1 = BotController('bot1')
+bot1 = Bot('bot1')
 bot1.signup()
 bot1.signin()
-print(bot1.get())
 
-game = GameController(bot1)
+
+
+bot2 = Bot('bot2')
+bot2.signup()
+bot2.signin()
+
+game = Game(bot1)
 game.create()
+game.connect_bot(bot2)
 print(game.status())
 game.start()
 print(game.status())
 # %%
-v = game.getMap();
-map = Map()
-
-print(map.parse(v))
-
+game.updateObjects()
+print(bot1.objects[np.where(bot1.objects == -10)])

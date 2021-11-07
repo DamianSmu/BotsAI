@@ -10,4 +10,5 @@ GAME_TAKE_TURN = "/takeTurn"
 GAME_MAP_OBJECTS = "/mapObjects"
 GAME_ACTION = "/action"
 GAME_GET_ALL = "/all"
+GAME_CONNECT = "/connect"
 
