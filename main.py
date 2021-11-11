@@ -1,26 +1,36 @@
 # %%
-import numpy as np
 
-from Bot import Bot
 from Game import Game
-from Map import Map
+from Player import Player
 
-bot1 = Bot('bot1')
-bot1.signup()
-bot1.signin()
+players = []
+for i in range(10):
+    players.append(Player('player_' + str(i)))
+    players[i].signup()
+    players[i].signin()
 
-
-
-bot2 = Bot('bot2')
-bot2.signup()
-bot2.signin()
-
-game = Game(bot1)
+game = Game(players[0])
 game.create()
-game.connect_bot(bot2)
-print(game.status())
+for i in range(1, 10):
+    game.connect_player(players[i])
+
 game.start()
 print(game.status())
 # %%
-game.updateObjects()
-print(bot1.objects[np.where(bot1.objects == -10)])
+objects = game.getObjects()
+
+for p in players:
+    p.updateObjects(objects, game.map.size)
+    for k, b in p.bots.items():
+        # b.calculate_reward()
+        print(str(p.name) + ": " + str(p.calculate_reward()))
+
+# %%
+players[0].postAction(game.id, 8, next(iter(players[0].bots.values())))
+game.takeTurn()
+
+objects = game.getObjects()
+for p in players:
+    p.updateObjects(objects, game.map.size)
+    for k, b in p.bots.items():
+        print(str(p.name) + ": " + str(p.calculate_reward()) + ": " + str(b.bot_matrix))
