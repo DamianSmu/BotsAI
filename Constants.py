@@ -1,3 +1,4 @@
+# URLS
 BASE_URL = "http://localhost:8080/api"
 SIGNUP_URL = "/user/signup"
 SIGNIN_URL = "/user/signin"
@@ -11,7 +12,9 @@ GAME_MAP_OBJECTS = "/mapObjects"
 GAME_ACTION = "/action"
 GAME_GET_ALL = "/all"
 GAME_CONNECT = "/connect"
+GAME_POST_ACTION_AND_TAKE_TURN = "/postActionAndTakeTurn"
 
+# ACTIONS
 MOVE_UP = "MOVE_UP"
 MOVE_DOWN = "MOVE_DOWN"
 MOVE_LEFT = "MOVE_LEFT"
@@ -21,6 +24,9 @@ ATTACK_DOWN = "ATTACK_DOWN"
 ATTACK_LEFT = "ATTACK_LEFT"
 ATTACK_RIGHT = "ATTACK_RIGHT"
 PUT_UP_SETTLEMENT = "PUT_ON_SETTLEMENT"
+RECRUIT_UNIT_SETTLERS = "RECRUIT_UNIT_SETTLERS"
+RECRUIT_UNIT_WARRIORS = "RECRUIT_UNIT_WARRIORS"
+WAIT = "WAIT"
 
 actions = {0: MOVE_UP,
            1: MOVE_DOWN,
@@ -30,4 +36,7 @@ actions = {0: MOVE_UP,
            5: ATTACK_DOWN,
            6: ATTACK_LEFT,
            7: ATTACK_RIGHT,
-           8: PUT_UP_SETTLEMENT}
+           8: PUT_UP_SETTLEMENT,
+           9: RECRUIT_UNIT_SETTLERS,
+           10: RECRUIT_UNIT_WARRIORS,
+           11: WAIT}

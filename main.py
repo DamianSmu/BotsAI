@@ -1,36 +1,31 @@
 # %%
+import numpy as np
+# %%
 
 from Game import Game
-from Player import Player
+from Bot import Bot
 
-players = []
-for i in range(10):
-    players.append(Player('player_' + str(i)))
-    players[i].signup()
-    players[i].signin()
+game = Game()
 
-game = Game(players[0])
+bots = []
+rewards = []
+bots_count = 1
+for i in range(bots_count):
+    bots.append(Bot('player_' + str(i)))
+    game.signup_bot(bots[i])
+
+game.set_owner(bots[0])
 game.create()
-for i in range(1, 10):
-    game.connect_player(players[i])
+for i in range(1, bots_count):
+    game.connect_bot(bots[i])
 
 game.start()
 print(game.status())
 # %%
-objects = game.getObjects()
 
-for p in players:
-    p.updateObjects(objects, game.map.size)
-    for k, b in p.bots.items():
-        # b.calculate_reward()
-        print(str(p.name) + ": " + str(p.calculate_reward()))
+# b.calculate_reward()
+# print(str(p.name) + ": " + str(p.calculate_reward()))
 
 # %%
-players[0].postAction(game.id, 8, next(iter(players[0].bots.values())))
-game.takeTurn()
+# print(str(p.name) + ": " + str(p.calculate_reward()) + ": " + str(b.bot_matrix))
 
-objects = game.getObjects()
-for p in players:
-    p.updateObjects(objects, game.map.size)
-    for k, b in p.bots.items():
-        print(str(p.name) + ": " + str(p.calculate_reward()) + ": " + str(b.bot_matrix))
