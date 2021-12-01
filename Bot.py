@@ -74,14 +74,14 @@ class Bot:
         partial_sum[10] *= 0
         return np.sum(partial_sum) - invalid_actions * 100
 
-    def map_action(self, actions_matrix):
+    def map_action(self, q_values):
         actions = []
-        option = np.argmax(actions_matrix, axis=2)
+        option = np.argmax(q_values, axis=2)
 
         for o in self.objects:
             d = [o['x'],
                  o['y'],
                  option[o['x']][o['y']]]
+            print("q", q_values[o['x']][o['y']][option[o['x']][o['y']]])
             actions.append(d)
-            print(d)
         return actions
