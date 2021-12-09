@@ -8,6 +8,7 @@ GAME_START_URL = "/start"
 GAME_STATUS_URL = "/status"
 GAME_MAP_PNG = "/mapPNG/"
 GAME_TAKE_TURN = "/takeTurn"
+GAME_END_TURN = "/endTurn"
 GAME_MAP_OBJECTS = "/mapObjects"
 GAME_ACTION = "/action"
 GAME_GET_ALL = "/all"
@@ -29,8 +30,8 @@ RECRUIT_UNIT_WARRIORS = "RECRUIT_UNIT_WARRIORS"
 WAIT = "WAIT"
 
 actions = {0: MOVE_UP,
-           1: MOVE_DOWN,
-           2: MOVE_LEFT,
+           1: MOVE_LEFT,
+           2: MOVE_DOWN,
            3: MOVE_RIGHT,
            4: ATTACK_UP,
            5: ATTACK_DOWN,
@@ -38,5 +39,5 @@ actions = {0: MOVE_UP,
            7: ATTACK_RIGHT,
            8: PUT_UP_SETTLEMENT,
            9: RECRUIT_UNIT_SETTLERS,
-           10: RECRUIT_UNIT_WARRIORS,
-           11: WAIT}
+           10: RECRUIT_UNIT_WARRIORS}
+

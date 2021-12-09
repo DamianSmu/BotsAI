@@ -110,16 +110,19 @@ class Game:
         r.raise_for_status()
         return r.json()
 
-    def post_actions_and_take_turn(self, action_list, bot):
+    def end_turn(self, bot):
+        r = requests.post(url=Constants.BASE_URL + Constants.GAME_URL + self.id + Constants.GAME_END_TURN,
+                          headers={'Authorization': 'Bearer ' + bot.token})
+        r.raise_for_status()
+
+    def post_actions_and_take_turn(self, action, bot):
         payload = []
-        for a in action_list:
-            if a[2] != 11:  # wait action todo
-                j = {
-                    "actionType": Constants.actions[a[2]],
-                    "x": a[0],
-                    "y": a[1],
-                }
-                payload.append(j)
+        j = {
+            "actionType": Constants.actions[action[2]],
+            "x": action[0],
+            "y": action[1],
+        }
+        payload.append(j)
 
         r = requests.post(
             url=Constants.BASE_URL + Constants.GAME_URL + self.id + Constants.GAME_POST_ACTION_AND_TAKE_TURN,

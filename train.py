@@ -3,11 +3,13 @@ import Constants
 from Bot import Bot
 from Game import Game
 from NN import NN
-from DQN import Dqn
+from Q import Q
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.python.client import device_lib
+
+from TestBot import TestBot
 
 print(tf.__version__)
 print('A: ', tf.test.is_built_with_cuda)
@@ -21,34 +23,37 @@ print([x.name for x in local_device_protos if x.device_type == 'GPU'],
 #     tf.config.experimental.set_memory_growth(device, True)
 
 memSize = 40000
-batchSize = 10
+batch_size = 10
 learningRate = 0.001
 gamma = 0.9
 epsilon = 1.
 epsilonDecayRate = 0.0002
-minEpsilon = 0.05
+min_epsilon = 0.05
 filepathToSave = 'model.h5'
 mapSize = 20
 actions_count = len(Constants.actions)
-
-nn_predict = NN((mapSize, mapSize, 11), learningRate)
+input_state_layers = 11
+nn_predict = NN((mapSize, mapSize, input_state_layers), learningRate)
 model_predict = nn_predict.model
 
-nn_target = NN((mapSize, mapSize, 11), learningRate)
+nn_target = NN((mapSize, mapSize, input_state_layers), learningRate)
 model_target = nn_target.model
 
-dqn = Dqn(memSize, gamma)
-epoch = 0
+
 maxEpochs = 500000
-step = 0
-maxSteps = 20
+
+maxSteps = 200
 scores = []
-bots_count = 1
+total_reward = 0
+total_steps = 0
+max_reward = 0
+bots_count = 2
 copy_weights_init = 500
 copy_weights = copy_weights_init
 plot_x = []
 plot_y = []
 
+q = Q(memSize, gamma)
 game = Game()
 bots = []
 for i in range(bots_count):
@@ -57,76 +62,79 @@ for i in range(bots_count):
 
 game.set_owner(bots[0])
 bot = bots[0]
+opponent = TestBot(game, None, bots[1], True)
 game.create()
 for i in range(1, bots_count):
     game.connect_bot(bots[i])
 
+epoch = 0
 for epoch in range(maxEpochs):
     gameOver = False
     step = 0
     placed = 0
     game.start()
-    currentState = bot.set_state(game.get_objects(), mapSize)
     while not gameOver:
-        copy_weights -= 1
-        step += 1
-        if np.random.rand() < epsilon:
-            qvalues = np.random.rand(mapSize, mapSize, actions_count)
-        else:
-            qvalues = model_predict.predict(np.expand_dims(currentState, axis=0))[0]
+        current_state = bot.set_state(game.get_objects(), mapSize)
+        start_objects = bot.map_objects
+        for map_object in start_objects:
+            copy_weights -= 1
+            step += 1
+            total_steps += 1
 
-        actions = bot.map_action(qvalues)
-
-        response = game.post_actions_and_take_turn(actions, bot)
-        invalidActions = response['invalidActions']
-        nextState = bot.set_state(game.get_objects(), mapSize)
-        # reward = bot.calculate_reward(invalidActions)
-
-        # Calculate reward for placed settlement
-        if actions[0][2] == 8 and invalidActions == 0:
-            reward = 1
-            gameOver = True
-        elif invalidActions == 0 and actions[0][2] == 8 and currentState[actions[0][0], actions[0][1], 0] in [2, 3]:
-            reward = 5
-            gameOver = True
-            placed = step
-        else:
-            reward = -0.2
-
-        if invalidActions == 1:
-            reward = -1
-
-        dqn.remember([currentState, actions, reward, nextState], gameOver)
-        inputs, targets = dqn.get_batch(model_predict, model_target, batchSize)
-        print("epoch: ", epoch, "step: ", step, "epsilon: ", epsilon)
-        print("action: ", actions[0], reward)
-        model_predict.train_on_batch(inputs, targets)
-        currentState = nextState
-
-        # total_reward += reward
-        # if reward > maxReward:
-        #     maxReward = reward
-        #     model.save(filepathToSave)
-
-        if epsilon > minEpsilon:
-            epsilon -= epsilonDecayRate
-
-        if step > maxSteps:
-            gameOver = True
-
-        if copy_weights == 0:
-            copy_weights = copy_weights_init
-            model_target.set_weights(model_predict.get_weights())
+            global_state, local_state = bot.get_padded_state(map_object)
+            action = bot.predict_action(model_predict, map_object, epsilon, global_state, local_state)
+            response = game.post_actions_and_take_turn(action, bot)
+            current_state = bot.set_state(game.get_objects(), mapSize)
+            global_state_next, local_state_next = bot.get_padded_state(map_object)
+            invalidActions = response['invalidActions']
 
 
-        if placed != 0:
-            #scores.append(placed)
-            #total_reward = 0
-            plot_x.append(epoch)
-            plot_y.append(step)
-            plt.scatter(plot_x, plot_y)
-            plt.xlabel('Epoch')
-            plt.ylabel('Step number')
-            plt.savefig('stats.png')
-            plt.close()
-            model_predict.save(filepathToSave)
+
+            # Calculate reward for placed settlement
+            if action[2] == 8 and invalidActions == 0:
+                reward = 0.1
+                gameOver = True
+                if current_state[19, 19, 0] > 3:
+                    reward = 1
+                    placed = step
+            else:
+                reward = -0.2
+            if invalidActions == 1:
+                reward = -1
+
+
+
+            q.remember([[global_state, local_state], action, reward, [global_state_next, local_state_next]], gameOver)
+            q.train_on_batch(model_predict, model_target, batch_size)
+
+            print("epoch: ", epoch, "step: ", step, "epsilon: ", epsilon)
+            print("action: ", action, reward)
+
+            if epsilon > min_epsilon:
+                epsilon -= epsilonDecayRate
+
+            if step > maxSteps:
+                gameOver = True
+
+            if copy_weights == 0:
+                copy_weights = copy_weights_init
+                model_target.set_weights(model_predict.get_weights())
+
+            total_reward += reward
+            if reward > max_reward:
+                max_reward = reward
+                model_predict.save(filepathToSave)
+
+            if total_steps % 50 == 0:
+                scores.append(total_reward)
+                total_reward = 0
+                # plot_x.append(epoch)
+                # plot_y.append(step)
+                plt.plot(scores)
+                plt.xlabel('Steps / 50')
+                plt.ylabel('Reward ')
+                plt.savefig('stats.png')
+                plt.close()
+                model_predict.save(filepathToSave)
+        game.end_turn(bot)
+        opponent.play()

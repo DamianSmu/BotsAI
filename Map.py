@@ -1,9 +1,9 @@
 import numpy as np
 
-terrain = {'WATER': 0,
-           'LAND': 1,
-           'IRON': 2,
-           'GOLD': 3}
+terrain = {'WATER': 1,
+           'LAND': 3,
+           'IRON': 5,
+           'GOLD': 10}
 
 
 class Map:
