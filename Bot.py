@@ -9,40 +9,45 @@ class Bot:
         self.token = None
         self.state = []
         self.terrain = None
-        self.map_objects = []
+        self.units = []
+        self.settlements = []
 
     def set_state(self, objects, map_size=20):
-        units = [x for x in objects if x['mapObject']['type'] in ['SETTLERS', 'WARRIORS']]
-        settlements = [x for x in objects if x['mapObject']['type'] in ['SETTLEMENT']]
+        units = [x for x in objects if x['unit'] and x['unit']['type'] in ['SETTLERS', 'WARRIORS']]
+        settlements = [x for x in objects if x['settlement'] and x['settlement']['type'] in ['SETTLEMENT']]
 
-        my_units = [x for x in units if x['mapObject']['user']['id'] == self.id]
-        my_settlements = [x for x in settlements if x['mapObject']['user']['id'] == self.id]
-        other_units = [x for x in units if x['mapObject']['user']['id'] != self.id]
-        other_settlements = [x for x in settlements if x['mapObject']['user']['id'] != self.id]
+        my_units = [x for x in units if x and x['unit']['user']['id'] == self.id]
+        my_settlements = [x for x in settlements if x and x['settlement']['user']['id'] == self.id]
+        other_units = [x for x in units if x and x['unit']['user']['id'] != self.id]
+        other_settlements = [x for x in settlements if x and x['settlement']['user']['id'] != self.id]
 
-        self.map_objects = []
-        for u in my_units + my_settlements:
-            self.map_objects.append({'x': u['position']['x'], 'y': u['position']['y'], 'type': u['mapObject']['type']})
+        self.units = []
+        for u in my_units:
+            self.units.append({'x': u['position']['x'], 'y': u['position']['y'], 'type': u['unit']['type']})
 
-        m = np.dstack([self.terrain, np.zeros((map_size, map_size, 10))])
+        self.settlements = []
+        for u in my_settlements:
+            self.settlements.append({'x': u['position']['x'], 'y': u['position']['y'], 'type': u['settlement']['type']})
+
+        m = np.dstack([self.terrain, np.zeros((map_size, map_size, 6))])
 
         for o in my_units:
-            m[o['position']['x'], o['position']['y'], 1] = o['mapObject']['defence']
-            m[o['position']['x'], o['position']['y'], 2] = o['mapObject']['offence']
+            m[o['position']['x'], o['position']['y'], 1] = o['unit']['defence']
+            m[o['position']['x'], o['position']['y'], 2] = o['unit']['offence']
 
         for o in other_units:
-            m[o['position']['x'], o['position']['y'], 3] = o['mapObject']['defence']
-            m[o['position']['x'], o['position']['y'], 4] = o['mapObject']['offence']
+            m[o['position']['x'], o['position']['y'], 3] = o['unit']['defence']
+            m[o['position']['x'], o['position']['y'], 4] = o['unit']['offence']
 
         for o in my_settlements:
-            m[o['position']['x'], o['position']['y'], 5] = o['mapObject']['defence']
-            m[o['position']['x'], o['position']['y'], 6] = o['mapObject']['goldAmount']
-            m[o['position']['x'], o['position']['y'], 7] = o['mapObject']['ironAmount']
+            m[o['position']['x'], o['position']['y'], 5] = o['settlement']['defence']
+            # m[o['position']['x'], o['position']['y'], 6] = o['settlement']['goldAmount']
+            # m[o['position']['x'], o['position']['y'], 7] = o['settlement']['ironAmount']
 
         for o in other_settlements:
-            m[o['position']['x'], o['position']['y'], 8] = o['mapObject']['defence']
-            m[o['position']['x'], o['position']['y'], 9] = o['mapObject']['goldAmount']
-            m[o['position']['x'], o['position']['y'], 10] = o['mapObject']['ironAmount']
+            m[o['position']['x'], o['position']['y'], 6] = o['settlement']['defence']
+            # m[o['position']['x'], o['position']['y'], 7] = o['settlement']['goldAmount']
+            # m[o['position']['x'], o['position']['y'], 8] = o['settlement']['ironAmount']
 
             # 0: terrain
             # 1: my_units_defence

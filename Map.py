@@ -2,7 +2,7 @@ import numpy as np
 
 terrain = {'WATER': 1,
            'LAND': 3,
-           'IRON': 5,
+           'IRON': 10,
            'GOLD': 10}
 
 

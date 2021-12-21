@@ -14,7 +14,7 @@ class TestBot:
 
     def play(self):
         self.bot.set_state(self.game.get_objects(), map_size=20)
-        start_objects = self.bot.map_objects
+        start_objects = self.bot.units + self.bot.settlements
         for map_object in start_objects:
             global_state, local_state = self.bot.get_padded_state(map_object)
             action = self.bot.predict_action(self.model, map_object, self.is_random, global_state, local_state)
