@@ -93,7 +93,7 @@ class Game:
         payload = []
         for a in action_list:
             j = {
-                "actionType": Constants.actions[a['action']],
+                "actionType": Constants.actions[a[2]],
                 "x": a['x'],
                 "y": a['y'],
             }
@@ -118,7 +118,7 @@ class Game:
     def post_actions_and_take_turn(self, action, bot):
         payload = []
         j = {
-            "actionType": Constants.actions[action[2]],
+            "actionType": Constants.actions[10 if action[2] == 8 else action[2]],
             "x": action[0],
             "y": action[1],
         }
