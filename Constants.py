@@ -13,7 +13,7 @@ GAME_MAP_OBJECTS = "/mapObjects"
 GAME_ACTION = "/action"
 GAME_GET_ALL = "/all"
 GAME_CONNECT = "/connect"
-GAME_POST_ACTION_AND_TAKE_TURN = "/postActionAndTakeTurn"
+GAME_POST_ACTION_AND_TAKE_TURN = "/act"
 
 # ACTIONS
 MOVE_UP = "MOVE_UP"

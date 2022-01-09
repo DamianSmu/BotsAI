@@ -1,11 +1,10 @@
-from NN import NN
-
 
 class TestBot:
-    def __init__(self, game, model_path, bot, is_random, nn):
+    def __init__(self, game, model_path, bot, is_random, nn, forbidden_actions=None):
         self.game = game
         self.bot = bot
         self.is_random = is_random
+        self.forbidden_actions = forbidden_actions
         if model_path is not None:
             self.model = nn.load_model(model_path)
         else:
@@ -17,8 +16,9 @@ class TestBot:
         for map_object in start_objects:
             global_state, local_state = self.bot.get_padded_state(map_object)
             action = self.bot.predict_action(self.model, map_object, self.is_random, global_state, local_state)
-            if action[2] in [4, 5, 6, 7]:
+            if self.forbidden_actions is not None and action[2] in self.forbidden_actions:
                 action[2] = 10
             self.game.post_actions_and_take_turn(action, self.bot)
         self.game.end_turn(self.bot)
+        self.bot.set_state(self.game.get_objects(), map_size=20)
 

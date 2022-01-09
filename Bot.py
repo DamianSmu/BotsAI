@@ -41,25 +41,9 @@ class Bot:
 
         for o in my_settlements:
             m[o['position']['x'], o['position']['y'], 5] = o['settlement']['defence']
-            # m[o['position']['x'], o['position']['y'], 6] = o['settlement']['goldAmount']
-            # m[o['position']['x'], o['position']['y'], 7] = o['settlement']['ironAmount']
 
         for o in other_settlements:
             m[o['position']['x'], o['position']['y'], 6] = o['settlement']['defence']
-            # m[o['position']['x'], o['position']['y'], 7] = o['settlement']['goldAmount']
-            # m[o['position']['x'], o['position']['y'], 8] = o['settlement']['ironAmount']
-
-            # 0: terrain
-            # 1: my_units_defence
-            # 2: my_units_offence
-            # 3: other_units_defence
-            # 4: other_units_offence
-            # 5: my_settlements_defence
-            # 6: my_settlements_gold
-            # 7: my_settlements_iron
-            # 8: other_settlements_defence
-            # 9: other_settlements_gold
-            # 10: other_settlements_iron
 
         self.state = []
         for x in list(np.moveaxis(m, 2, 0)):
