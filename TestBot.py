@@ -11,7 +11,7 @@ class TestBot:
             self.model = None
 
     def play(self):
-        self.bot.set_state(self.game.get_objects(), map_size=20)
+        self.bot.set_state(self.game.get_objects(), map_size)
         start_objects = self.bot.units + self.bot.settlements
         for map_object in start_objects:
             global_state, local_state = self.bot.get_padded_state(map_object)
@@ -20,5 +20,5 @@ class TestBot:
                 action[2] = 10
             self.game.post_actions_and_take_turn(action, self.bot)
         self.game.end_turn(self.bot)
-        self.bot.set_state(self.game.get_objects(), map_size=20)
+        self.bot.set_state(self.game.get_objects(), map_size)
 

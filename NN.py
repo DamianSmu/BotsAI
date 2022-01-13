@@ -19,12 +19,11 @@ class NN:
         layer_local = layers.Flatten()(input_local)
 
         f = layers.concatenate([layer_local, layer_global])
-        # f = layers.Dense(256, activation="leaky_relu")(f)
-        # f = layers.Dense(256, activation="leaky_relu")(f)
-        # f = layers.Dense(256, activation="leaky_relu")(f)
+        f = layers.Dense(512, activation="leaky_relu")(f)
 
         output = layers.Dense(actions_number, activation="linear", name="Units_actions")(f)
 
         self.model = keras.Model(inputs=[input_global, input_local], outputs=output)
         self.model.compile(loss='mean_squared_error', optimizer=Adam(learning_rate=lr))
+        print(self.model.summary())
         tf.keras.utils.plot_model(self.model, to_file="n2n", show_shapes=True, dpi=200)

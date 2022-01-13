@@ -12,10 +12,9 @@ class Bot:
         self.units = []
         self.settlements = []
 
-    def set_state(self, objects, map_size=20):
+    def set_state(self, objects, map_size):
         units = [x for x in objects if x['unit'] and x['unit']['type'] in ['SETTLERS', 'WARRIORS']]
         settlements = [x for x in objects if x['settlement'] and x['settlement']['type'] in ['SETTLEMENT']]
-
         my_units = [x for x in units if x and x['unit']['user']['id'] == self.id]
         my_settlements = [x for x in settlements if x and x['settlement']['user']['id'] == self.id]
         other_units = [x for x in units if x and x['unit']['user']['id'] != self.id]
@@ -28,20 +27,16 @@ class Bot:
         self.settlements = []
         for u in my_settlements:
             self.settlements.append({'x': u['position']['x'], 'y': u['position']['y'], 'type': u['settlement']['type']})
-
         m = np.dstack([self.terrain, np.zeros((map_size, map_size, 6))])
 
         for o in my_units:
             m[o['position']['x'], o['position']['y'], 1] = o['unit']['defence']
             m[o['position']['x'], o['position']['y'], 2] = o['unit']['offence']
-
         for o in other_units:
             m[o['position']['x'], o['position']['y'], 3] = o['unit']['defence']
             m[o['position']['x'], o['position']['y'], 4] = o['unit']['offence']
-
         for o in my_settlements:
             m[o['position']['x'], o['position']['y'], 5] = o['settlement']['defence']
-
         for o in other_settlements:
             m[o['position']['x'], o['position']['y'], 6] = o['settlement']['defence']
 
@@ -52,9 +47,9 @@ class Bot:
 
         return self.state
 
-    def get_padded_state(self, object, local_state_size=3, map_size=20):
-        posx = object['x']
-        posy = object['y']
+    def get_padded_state(self, map_object, local_state_size=3, map_size=20):
+        posx = map_object['x']
+        posy = map_object['y']
         global_state = self.state[posx:posx + (2 * map_size) - 1, posy:posy + (2 * map_size) - 1]
         off = (global_state.shape[0] - local_state_size) // 2
         local_state = global_state[off:-off, off:-off]
@@ -71,17 +66,3 @@ class Bot:
                 map_object['y'],
                 option]
 
-    # def calculate_reward(self, invalid_actions):
-    #     partial_sum = np.sum(np.sum(self.state, axis=0), axis=0)
-    #     partial_sum[0] *= 0
-    #     partial_sum[1] *= 1
-    #     partial_sum[2] *= 1
-    #     partial_sum[3] *= 0
-    #     partial_sum[4] *= 0
-    #     partial_sum[5] *= 1
-    #     partial_sum[6] *= 1
-    #     partial_sum[7] *= 1
-    #     partial_sum[8] *= 0
-    #     partial_sum[9] *= 0
-    #     partial_sum[10] *= 0
-    #     return np.sum(partial_sum) - invalid_actions * 100
