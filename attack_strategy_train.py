@@ -38,10 +38,10 @@ min_epsilon = 0.01
 filepathToSave = dir_name + '/model_attack.h5'
 mapSize = 20
 actions_number = len(Constants.actions)
-nn_predict = NN(map_size=mapSize, local_size=3, input_depth=7, actions_number=11, lr=learningRate)
+nn_predict = NN(map_size=mapSize, local_size=3, input_depth=7, actions=11, lr=learningRate)
 model_predict = nn_predict.model
 
-nn_target = NN(map_size=mapSize, local_size=3, input_depth=7, actions_number=11, lr=learningRate)
+nn_target = NN(map_size=mapSize, local_size=3, input_depth=7, actions=11, lr=learningRate)
 model_target = nn_target.model
 
 maxEpochs = 5000
@@ -103,7 +103,7 @@ for epoch in range(maxEpochs):
         invalid_actions = response['invalidActions']
 
         reward = attack_strategy_reward(current_state, current_state_next, local_state, action, invalid_actions)
-        q.remember([[global_state, local_state], action, reward, [global_state_next, local_state_next]], gameOver)
+        q.save([[global_state, local_state], action, reward, [global_state_next, local_state_next]], gameOver)
 
         posx.append(bot.units[0]['x'])
         posy.append(bot.units[0]['y'])

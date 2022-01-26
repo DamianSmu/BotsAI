@@ -29,10 +29,10 @@ min_epsilon = 0.01
 model_path = dir_name + '/model_set.h5'
 map_size = 20
 actions_number = len(Constants.actions)
-nn_predict = NN(map_size=map_size, local_size=3, input_depth=7, actions_number=11, lr=learningRate)
+nn_predict = NN(map_size=map_size, local_size=3, input_depth=7, actions=11, lr=learningRate)
 model_predict = nn_predict.model
 
-nn_target = NN(map_size=map_size, local_size=3, input_depth=7, actions_number=11, lr=learningRate)
+nn_target = NN(map_size=map_size, local_size=3, input_depth=7, actions=11, lr=learningRate)
 model_target = nn_target.model
 
 maxEpochs = 1000
@@ -85,7 +85,7 @@ for epoch in range(maxEpochs):
 
         reward = settlements_strategy_reward(current_state, current_state_next, local_state, action, invalid_actions)
 
-        q.remember([[global_state, local_state], action, reward, [global_state_next, local_state_next]], gameOver)
+        q.save([[global_state, local_state], action, reward, [global_state_next, local_state_next]], gameOver)
 
         if total_steps > warmup:
             current_loss = q.train_on_batch(model_predict, model_target, batch_size)

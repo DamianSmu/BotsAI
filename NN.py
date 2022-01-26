@@ -7,23 +7,24 @@ import tensorflow as tf
 
 
 class NN:
-    def __init__(self, map_size, local_size, input_depth, actions_number, lr):
-        input_global = keras.Input(shape=(2 * map_size - 1, 2 * map_size - 1, input_depth), name='Game_state_global')
-        input_local = keras.Input(shape=(local_size, local_size, input_depth), name='Game_state_local')
+    def __init__(self, map_size, local_size, input_depth, actions, lr):
+        shape = (2 * map_size - 1, 2 * map_size - 1, input_depth)
+        in_global = keras.Input(shape)
+        in_local = keras.Input(shape=(local_size, local_size, input_depth))
 
-        layer_global = layers.Conv2D(32, 4, strides=2, activation="leaky_relu")(input_global)
-        layer_global = layers.Conv2D(64, 4, strides=2, activation="leaky_relu")(layer_global)
-        layer_global = layers.Conv2D(64, 4, strides=2, activation="leaky_relu")(layer_global)
+        l_global = layers.Conv2D(32, 4, strides=2, activation="leaky_relu")(in_global)
+        l_global = layers.Conv2D(64, 4, strides=2, activation="leaky_relu")(l_global)
+        l_global = layers.Conv2D(64, 4, strides=2, activation="leaky_relu")(l_global)
 
-        layer_global = layers.Flatten()(layer_global)
-        layer_local = layers.Flatten()(input_local)
+        l_global = layers.Flatten()(l_global)
+        l_local = layers.Flatten()(in_local)
 
-        f = layers.concatenate([layer_local, layer_global])
+        f = layers.concatenate([l_local, l_global])
         f = layers.Dense(512, activation="leaky_relu")(f)
 
-        output = layers.Dense(actions_number, activation="linear", name="Units_actions")(f)
+        out = layers.Dense(actions, activation="linear")(f)
 
-        self.model = keras.Model(inputs=[input_global, input_local], outputs=output)
-        self.model.compile(loss='mean_squared_error', optimizer=Adam(learning_rate=lr))
+        self.model = keras.Model(inputs=[in_global, in_local], outputs=out)
+        self.model.compile(loss='mse', optimizer=Adam(learning_rate=lr))
         print(self.model.summary())
         tf.keras.utils.plot_model(self.model, to_file="n2n", show_shapes=True, dpi=200)
