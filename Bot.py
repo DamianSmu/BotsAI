@@ -1,4 +1,5 @@
 import numpy as np
+
 import Constants
 
 
@@ -65,4 +66,3 @@ class Bot:
         return [map_object['x'],
                 map_object['y'],
                 option]
-

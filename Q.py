@@ -33,4 +33,3 @@ class Q:
     def train_on_batch(self, predict_net, target_net, batch_size=10):
         inputs, targets = self.get_batch(predict_net, target_net, batch_size)
         return predict_net.train_on_batch(inputs, targets)
-

@@ -52,7 +52,7 @@ class Game:
 
     def get_map(self):
         r = requests.get(url=Constants.BASE_URL + Constants.GAME_URL + self.id,
-                            headers={'Authorization': 'Bearer ' + self.owner.token})
+                         headers={'Authorization': 'Bearer ' + self.owner.token})
         r.raise_for_status()
         return r.json()
 

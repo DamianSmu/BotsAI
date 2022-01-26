@@ -1,9 +1,9 @@
 import keras
 import keras.optimizers
+import tensorflow as tf
 from keras import layers
 from keras.optimizer_v2.adam import Adam
 from tensorflow import keras
-import tensorflow as tf
 
 
 class NN:

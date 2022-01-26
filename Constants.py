@@ -40,4 +40,3 @@ actions = {0: MOVE_UP,
            8: PUT_UP_SETTLEMENT,
            9: RECRUIT_UNIT_SETTLERS,
            10: RECRUIT_UNIT_WARRIORS}
-

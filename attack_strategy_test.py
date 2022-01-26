@@ -2,22 +2,16 @@ import logging
 import os
 import sys
 from datetime import datetime
-import time
 
+import matplotlib.pyplot as plt
+import numpy as np
 from keras.models import load_model
 
 import Constants
 from Bot import Bot
 from Game import Game
-from NN import NN
-from Q import Q
-import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
-from tensorflow.python.client import device_lib
 from Reward import attack_strategy_reward
 from TestBot import TestBot
-
 
 dir_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(dir_name)

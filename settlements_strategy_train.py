@@ -1,18 +1,20 @@
 import logging
 import os
 import sys
-from datetime import datetime
 import time
+from datetime import datetime
+
+import matplotlib.pyplot as plt
+import numpy as np
+
 import Constants
 from Bot import Bot
 from Game import Game
 from NN import NN
 from Q import Q
-import numpy as np
-import matplotlib.pyplot as plt
 from Reward import settlements_strategy_reward
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 dir_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.mkdir(dir_name)
@@ -126,7 +128,7 @@ for epoch in range(maxEpochs):
         if total_steps % max_steps == 0:
             scores.append(total_reward)
             total_reward = 0
-            plt.plot(np.convolve(scores, np.ones(5)/5, mode='valid'))
+            plt.plot(np.convolve(scores, np.ones(5) / 5, mode='valid'))
             plt.grid()
             plt.savefig(dir_name + '\\reward.png')
             plt.close()

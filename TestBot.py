@@ -1,4 +1,3 @@
-
 class TestBot:
     def __init__(self, game, model_path, bot, is_random, nn, forbidden_actions=None):
         self.game = game
@@ -21,4 +20,3 @@ class TestBot:
             self.game.post_actions_and_take_turn(action, self.bot)
         self.game.end_turn(self.bot)
         self.bot.set_state(self.game.get_objects(), map_size)
-
